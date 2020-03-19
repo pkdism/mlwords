@@ -11,7 +11,9 @@ class LinearRegression:
         self.theta = np.random.rand(1, self.features_count + 1)
         self.h = np.zeros((self.rows, 1))
 
-    def fit(self, learning_rate=1e-4, max_iter=1000, optimization_algorithm="BatchGradientDescent", batch_size = 1):
+    def fit(self, learning_rate=1e-4, max_iter=1000, optimization_algorithm="BatchGradientDescent",
+            mini_batch_size=None, sgd_rows=None):
+
         ones = np.ones((self.rows, 1))
         z = np.concatenate((ones, self.x), axis=1)
         cols = z.shape[1]
@@ -23,9 +25,11 @@ class LinearRegression:
                 self.theta = self.theta - learning_rate * dtheta
 
         if optimization_algorithm == "MiniBatchGradientDescent":
-            z_splits = np.array_split(z, self.rows//batch_size, axis=0)
-            y_splits = np.array_split(self.y, self.rows // batch_size, axis=0)
-            h_splits = np.array_split(self.h, self.rows // batch_size, axis=0)
+            if mini_batch_size is None:
+                mini_batch_size = min(self.rows, self.rows//10)
+            z_splits = np.array_split(z, self.rows // mini_batch_size, axis=0)
+            y_splits = np.array_split(self.y, self.rows // mini_batch_size, axis=0)
+            h_splits = np.array_split(self.h, self.rows // mini_batch_size, axis=0)
             n_splits = len(z_splits)
             for iter in range(max_iter):
                 for i in range(n_splits):
@@ -34,6 +38,16 @@ class LinearRegression:
                     dtheta = sum((h_splits[i] - y_splits[i].reshape(split_rows, 1)).T.dot(z_splits[i]))
                     self.theta = self.theta - learning_rate * dtheta
             self.h = np.concatenate(h_splits)
+
+        if optimization_algorithm == "StochasticGradientDescent":
+            for iter in range(max_iter):
+                if sgd_rows is None:
+                    sgd_rows = self.rows
+                for one_row in range(sgd_rows):
+                    self.h[one_row, :] = z[one_row, :].dot(self.theta.T)
+                    dtheta = sum((self.h[one_row, :].reshape(1, 1) - self.y[one_row].reshape(1, 1)).T.dot(
+                        z[one_row, :].reshape(1, cols)))
+                    self.theta = self.theta - learning_rate * dtheta
 
         h = self.h.reshape(self.rows, 1)
         y = self.y.reshape(self.rows, 1)
