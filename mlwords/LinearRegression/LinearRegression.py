@@ -11,6 +11,9 @@ class LinearRegression:
         self.theta = np.random.rand(1, self.features_count + 1)
         self.h = np.zeros((self.rows, 1))
 
+    def hypothesis(self, x, theta):
+        return x.dot(theta.T)
+
     def fit(self, learning_rate=1e-4, max_iter=1000, optimization_algorithm="BatchGradientDescent",
             mini_batch_size=None, sgd_rows=None):
 
@@ -20,8 +23,8 @@ class LinearRegression:
 
         if optimization_algorithm == "BatchGradientDescent":
             for iter in range(max_iter):
-                self.h = z.dot(self.theta.T)
-                dtheta = sum((self.h - self.y.reshape(self.rows, 1)).T.dot(z))
+                self.h = self.hypothesis(z, self.theta)
+                dtheta = sum((self.h - self.y.reshape(self.rows, 1)).T.dot(z))/self.rows
                 self.theta = self.theta - learning_rate * dtheta
 
         if optimization_algorithm == "MiniBatchGradientDescent":
@@ -34,8 +37,8 @@ class LinearRegression:
             for iter in range(max_iter):
                 for i in range(n_splits):
                     split_rows = z_splits[i].shape[0]
-                    h_splits[i] = z_splits[i].dot(self.theta.T)
-                    dtheta = sum((h_splits[i] - y_splits[i].reshape(split_rows, 1)).T.dot(z_splits[i]))
+                    h_splits[i] = self.hypothesis(z_splits[i], self.theta)
+                    dtheta = sum((h_splits[i] - y_splits[i].reshape(split_rows, 1)).T.dot(z_splits[i]))/split_rows
                     self.theta = self.theta - learning_rate * dtheta
             self.h = np.concatenate(h_splits)
 
@@ -44,7 +47,7 @@ class LinearRegression:
                 if sgd_rows is None:
                     sgd_rows = self.rows
                 for one_row in range(sgd_rows):
-                    self.h[one_row, :] = z[one_row, :].dot(self.theta.T)
+                    self.h[one_row, :] = self.hypothesis(z[one_row, :], self.theta)
                     dtheta = sum((self.h[one_row, :].reshape(1, 1) - self.y[one_row].reshape(1, 1)).T.dot(
                         z[one_row, :].reshape(1, cols)))
                     self.theta = self.theta - learning_rate * dtheta

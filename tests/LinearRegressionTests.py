@@ -12,7 +12,7 @@ import mlwords.LinearRegression.LinearRegression as lm
 #     unittest.main()
 
 # BatchGradientDescent
-if False:
+if True:
     rows = 100
     data_x = np.concatenate((3 * np.random.rand(rows, 1), 4 * np.random.rand(rows, 1), np.random.rand(rows, 1) * (-2)),
                             axis=1)
@@ -31,7 +31,7 @@ if False:
 
 
 # MiniBatchGradientDescent
-if False:
+if True:
     rows = 10000
     data_x = np.concatenate((3 * np.random.rand(rows, 1), 4 * np.random.rand(rows, 1), np.random.rand(rows, 1) * (-2)),
                             axis=1)
@@ -50,7 +50,7 @@ if False:
 
 
 # StochasticGradientDescent
-if False:
+if True:
     rows = 10000
     data_x = np.concatenate((3 * np.random.rand(rows, 1), 4 * np.random.rand(rows, 1), np.random.rand(rows, 1) * (-2)),
                             axis=1)
