@@ -18,7 +18,6 @@ class LogisticRegression:
             z[i] = 1/(1 + exp(z[i]*(-1)))
         return z
 
-
     def hypothesis(self, x, theta):
         return self.sigmoid(x.dot(theta.T))
 
@@ -62,18 +61,14 @@ class LogisticRegression:
 
         h = self.h.reshape(self.rows, 1)
         y = self.y.reshape(self.rows, 1)
-        # self.training_mse = sum((h - y) ** 2) / self.rows
-        # self.training_rmse = self.training_mse ** 0.5
-        # self.training_mae = sum(abs(h - y)) / self.rows
-        # self.training_mape = sum(abs((h - y) / y)) / self.rows
 
     def predict(self, x):
         assert x.shape[1] == self.features_count
         ones = np.ones((x.shape[0], 1))
         z = np.concatenate((ones, self.x), axis=1)
         predictions = self.sigmoid(z.dot(self.theta.T))
-
         return predictions
+
 
 data_x = np.array([[10, 200, 100, 12], [1, 0, 0, 1], [10, 11, 11, 10]]).T
 data_y = np.array([1, 0, 0, 1])
