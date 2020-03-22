@@ -1,10 +1,9 @@
 import numpy as np
-from math import log2
 
 
 class DecisionTree:
 
-    def __int__(self, x, y):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
         self.rows = self.x.shape[0]
@@ -37,10 +36,14 @@ class DecisionTree:
             low, high = min(x[:, i]), max(x[:, i])
             vals = np.linspace(low, high, 100)
             for v in vals:
-                d1 = x[np.where(x[:, i] < v), i]
-                d2 = x[np.where(x[:, i] >= v), i]
-                y1 = y[np.where(x[:, i] < v)]
-                y2 = y[np.where(x[:, i] >= v)]
+                d1 = None
+                d2 = None
+                if len(np.where(x[:, i] < v)) > 0:
+                    d1 = x[np.where(x[:, i] < v), i]
+                    y1 = y[np.where(x[:, i] < v)]
+                if len(np.where(x[:, i] >= v)) > 0:
+                    d2 = x[np.where(x[:, i] >= v), i]
+                    y2 = y[np.where(x[:, i] >= v)]
                 if split_criterion == "gini_impurity":
                     gini_part1 = self.gini_impurity(d1, y1)
                     gini_part2 = self.gini_impurity(d2, y2)
@@ -61,7 +64,7 @@ class DecisionTree:
     def build_tree(self,
                    x,
                    y,
-                   min_terminal_node_size = 1,
+                   min_terminal_node_size=1,
                    min_nodes_for_split=2,
                    max_depth=100,
                    cur_depth=0,
@@ -85,15 +88,15 @@ class DecisionTree:
                                        min_terminal_node_size=min_terminal_node_size,
                                        min_nodes_for_split=min_nodes_for_split,
                                        max_depth=max_depth,
-                                       cur_depth=cur_depth+1,
+                                       cur_depth=cur_depth + 1,
                                        split_criterion=split_criterion),
                 "no": self.build_tree(x=d1,
-                                       y=y1,
-                                       min_terminal_node_size=min_terminal_node_size,
-                                       min_nodes_for_split=min_nodes_for_split,
-                                       max_depth=max_depth,
-                                       cur_depth=cur_depth+1,
-                                       split_criterion=split_criterion)}
+                                      y=y1,
+                                      min_terminal_node_size=min_terminal_node_size,
+                                      min_nodes_for_split=min_nodes_for_split,
+                                      max_depth=max_depth,
+                                      cur_depth=cur_depth + 1,
+                                      split_criterion=split_criterion)}
 
     def fit(self,
             task="binary_classification",
@@ -102,12 +105,12 @@ class DecisionTree:
             max_depth=100,
             split_criterion="gini_impurity"):
         depth = 0
-        if task == "binary_classification"
-        tree = self.build_tree(x=self.x,
-                               y=self.y,
-                               min_terminal_node_size=min_terminal_node_size,
-                               min_nodes_for_split=min_nodes_for_split,
-                               max_depth=max_depth,
-                               cur_depth=depth,
-                               split_criterion=split_criterion)
+        if task == "binary_classification":
+            tree = self.build_tree(x=self.x,
+                                   y=self.y,
+                                   min_terminal_node_size=min_terminal_node_size,
+                                   min_nodes_for_split=min_nodes_for_split,
+                                   max_depth=max_depth,
+                                   cur_depth=depth,
+                                   split_criterion=split_criterion)
         return tree
