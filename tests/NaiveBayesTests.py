@@ -14,7 +14,7 @@ import mlwords.NaiveBayes.NaiveBayes as nb
 
 if True:
     data_x = pd.DataFrame({'A': 1.,
-                           # 'B': pd.Timestamp('20130102'),
+                           'B': pd.Timestamp('20130102'),
                            'C': pd.Series([1, 2, 3, 2]),
                            'D': np.array([3] * 4),
                            'E': pd.Categorical(['test', 'train', 'test', 'train']),
@@ -24,10 +24,8 @@ if True:
     model = nb.NaiveBayes(data_x, data_y)
     model.fit()
 
-    # print(model.p1[2][2])
-
     test_x = pd.DataFrame({'A': 1.,
-                           # 'B': pd.Timestamp('20130102'),
+                           'B': pd.Timestamp('20130102'),
                            'C': pd.Series([1, 2]),
                            'D': np.array([3] * 2),
                            'E': pd.Categorical(['test', 'train']),

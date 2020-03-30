@@ -51,11 +51,17 @@ class NaiveBayes:
         """
         assert x.shape[1] == self.x.shape[1], "x should have same columns as training data"
         x.columns = np.arange(x.shape[1])
-        p = np.ones(len(x))
+        p, p1_res, p0_res = np.zeros(len(x)), np.ones(len(x)), np.ones(len(x))
         p1 = self.p1
+        p0 = self.p0
         for row in range(x.shape[0]):
             for col in range(x.shape[1]):
                 val = x.iloc[row, col]
                 if val in p1[col]:
-                    p[row] = p[row] * p1[col][val]
+                    p1_res[row] = p1_res[row] * p1[col][val]
+                if val in p0[col]:
+                    p0_res[row] = p0_res[row] * p0[col][val]
+            if p0_res[row] + p1_res[row] != 0:
+                p[row] = p1_res[row]/(p1_res[row] + p0_res[row])
+
         return p
